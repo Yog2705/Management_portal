@@ -1,207 +1,128 @@
-
-// ==============================
-// CURRENT DATE
-// ==============================
-
-const dateElement = document.getElementById("currentDate");
-
-if (dateElement) {
-
-    const today = new Date();
-
-    dateElement.textContent = today.toLocaleDateString("en-IN", {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-    });
-
-}
+/* =====================================
+   MEVI MANAGEMENT PORTAL
+   JavaScript Functionality
+===================================== */
 
 
-// ==============================
-// ADD STUDENT FORM
-// ==============================
+/* =====================================
+   LIVE TABLE SEARCH
+===================================== */
 
-function openStudentForm() {
+function setupTableSearch(inputId, tableId) {
 
-    const form = document.getElementById("studentForm");
+    const searchInput = document.getElementById(inputId);
+    const table = document.getElementById(tableId);
 
-    if (form) {
-
-        form.classList.add("show");
-
-        form.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-
-        document.getElementById("name").focus();
-
+    // Stop if the search box or table does not exist
+    if (!searchInput || !table) {
+        return;
     }
-
-}
-
-
-function closeStudentForm() {
-
-    const form = document.getElementById("studentForm");
-
-    if (form) {
-        form.classList.remove("show");
-    }
-
-}
-
-
-// ==============================
-// STUDENT SEARCH
-// ==============================
-
-const searchInput = document.getElementById("studentSearch");
-
-if (searchInput) {
 
     searchInput.addEventListener("input", function () {
 
         const searchValue = this.value.toLowerCase().trim();
 
-        const rows = document.querySelectorAll(
-            "#studentTable tbody tr"
-        );
+        const rows = table.querySelectorAll("tbody tr");
 
-        let visibleCount = 0;
-
-        rows.forEach(row => {
+        rows.forEach(function (row) {
 
             const rowText = row.textContent.toLowerCase();
 
-            const match = rowText.includes(searchValue);
-
-            row.style.display = match ? "" : "none";
-
-            if (match) {
-                visibleCount++;
+            if (rowText.includes(searchValue)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
             }
 
         });
-
-        const noResults = document.getElementById("noResults");
-
-        if (noResults) {
-
-            noResults.style.display =
-                visibleCount === 0 ? "block" : "none";
-
-        }
 
     });
 
 }
 
 
-// ==============================
-// DELETE CONFIRMATION
-// ==============================
-
-function confirmDelete(studentName) {
-
-    return confirm(
-        `Are you sure you want to delete ${studentName}'s record?`
-    );
-
-}
-
-
-// ==============================
-// AUTO DISMISS FLASH MESSAGES
-// ==============================
+/* =====================================
+   INITIALIZE STUDENT AND COURSE SEARCH
+===================================== */
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const messages = document.querySelectorAll(".flash-message");
+    setupTableSearch("studentSearch", "studentsTable");
 
-    messages.forEach(message => {
+    setupTableSearch("courseSearch", "coursesTable");
 
-        setTimeout(() => {
 
-            message.style.transition = "opacity 0.5s";
+    /* =====================================
+       AUTOMATIC FLASH MESSAGE DISMISSAL
+    ===================================== */
 
-            message.style.opacity = "0";
+    const alerts = document.querySelectorAll(".alert");
 
-            setTimeout(() => {
-                message.remove();
+    alerts.forEach(function (alert) {
+
+        setTimeout(function () {
+
+            alert.style.transition = "opacity 0.5s ease";
+            alert.style.opacity = "0";
+
+            setTimeout(function () {
+                alert.remove();
             }, 500);
 
         }, 4000);
 
     });
 
-});
-// =================================
-// COURSES SECTION
-// =================================
 
-// Open course form
-function openCourseForm() {
-    const form = document.getElementById("courseForm");
+    /* =====================================
+       FORM VALIDATION
+    ===================================== */
 
-    if (form) {
-        form.classList.add("show");
+    const forms = document.querySelectorAll("form");
 
-        form.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-    }
-}
+    forms.forEach(function (form) {
 
+        form.addEventListener("submit", function (event) {
 
-// Close course form
-function closeCourseForm() {
-    const form = document.getElementById("courseForm");
+            const requiredInputs = form.querySelectorAll(
+                "input[required], textarea[required]"
+            );
 
-    if (form) {
-        form.classList.remove("show");
-    }
-}
+            let valid = true;
 
+            requiredInputs.forEach(function (input) {
 
-// Course search functionality
-const courseSearch = document.getElementById("courseSearch");
+                if (!input.value.trim()) {
+                    valid = false;
+                    input.style.borderColor = "#e34d59";
+                } else {
+                    input.style.borderColor = "";
+                }
 
-if (courseSearch) {
+            });
 
-    courseSearch.addEventListener("input", function () {
-
-        const searchValue = this.value.toLowerCase();
-
-        const rows = document.querySelectorAll(
-            "#courseTable tbody tr"
-        );
-
-        let visibleCount = 0;
-
-        rows.forEach(function (row) {
-
-            const match = row.textContent
-                .toLowerCase()
-                .includes(searchValue);
-
-            row.style.display = match ? "" : "none";
-
-            if (match) {
-                visibleCount++;
+            if (!valid) {
+                event.preventDefault();
+                alert("Please fill in all required fields.");
             }
 
         });
 
-        const message = document.getElementById("noCourseResults");
-
-        if (message) {
-            message.style.display =
-                visibleCount === 0 ? "block" : "none";
-        }
-
     });
+
+});
+
+
+/* =====================================
+   DELETE CONFIRMATION
+===================================== */
+
+function confirmDelete(itemName) {
+
+    return confirm(
+        "Are you sure you want to delete " +
+        itemName +
+        "? This action cannot be undone."
+    );
 
 }
