@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+
+{% block title %}Courses | MEVI{% endblock %}
+
+{% block breadcrumb %}Courses{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+
+<section class="welcome-section">
+
+    <div>
+
+        <span class="eyebrow">LEARNING, ONE STEP AT A TIME</span>
+
+        <h1>Course Directory <span>✦</span></h1>
+
+        <p>
+            Manage your institution's courses.
+            Add new programmes, explore course details and stay organised.
+        </p>
+
+    </div>
+
+    <button class="primary-btn" onclick="openCourseForm()">
+
+        <i data-lucide="plus"></i>
+        Add New Course
+
+    </button>
+
+</section>
+
+
+<!-- COURSE SUMMARY -->
+
+<div class="directory-summary">
+
+    <div class="summary-item">
+
+        <div class="summary-icon">
+            <i data-lucide="book-open"></i>
+        </div>
+
+        <div>
+            <h3>{{ courses|length }}</h3>
+            <p>Total registered courses</p>
+        </div>
+
+    </div>
+
+    <div class="summary-note">
+        <i data-lucide="check-circle"></i>
+        Your course records are up to date
+    </div>
+
+</div>
+
+
+<!-- ADD COURSE FORM -->
+
+<section class="content-card add-student-card" id="courseForm">
+
+    <div class="section-heading">
+
+        <div>
+            <span class="eyebrow">NEW COURSE</span>
+            <h2>Add a course</h2>
+            <p>Fill in the details below to create a course record.</p>
+        </div>
+
+        <button class="close-btn" onclick="closeCourseForm()">
+            &times;
+        </button>
+
+    </div>
+
+
+    <form action="{{ url_for('add_course') }}"
+          method="POST"
+          class="student-form">
+
+        <div class="form-group">
+
+            <label for="course_name">Course Name</label>
+
+            <input type="text"
+                   id="course_name"
+                   name="course_name"
+                   placeholder="e.g. Master of Computer Applications"
+                   required>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="course_code">Course Code</label>
+
+            <input type="text"
+                   id="course_code"
+                   name="course_code"
+                   placeholder="e.g. MCA"
+                   required>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="duration">Duration</label>
+
+            <input type="text"
+                   id="duration"
+                   name="duration"
+                   placeholder="e.g. 2 Years"
+                   required>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="description">Description</label>
+
+            <textarea id="description"
+                      name="description"
+                      placeholder="Enter course description"
+                      rows="3"></textarea>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button type="button"
+                    class="secondary-btn"
+                    onclick="closeCourseForm()">
+                Cancel
+            </button>
+
+            <button type="submit" class="primary-btn">
+
+                <i data-lucide="book-plus"></i>
+                Save Course
+
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
+
+
+<!-- COURSE TABLE -->
+
+<section class="content-card">
+
+    <div class="section-heading">
+
+        <div>
+            <span class="eyebrow">ALL RECORDS</span>
+            <h2>All Courses</h2>
+            <p>Browse and manage your course database.</p>
+        </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="table-toolbar">
+
+        <div class="search-box">
+
+            <i data-lucide="search"></i>
+
+            <input type="text"
+                   id="courseSearch"
+                   placeholder="Search by course name, code or duration...">
+
+        </div>
+
+        <span class="record-count">
+            {{ courses|length }} records
+        </span>
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table id="courseTable">
+
+            <thead>
+
+                <tr>
+                    <th>COURSE NAME</th>
+                    <th>COURSE CODE</th>
+                    <th>DURATION</th>
+                    <th>DESCRIPTION</th>
+                    <th>ACTION</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for course in courses %}
+
+                <tr>
+
+                    <td>
+
+                        <div class="student-cell">
+
+                            <div class="student-avatar">
+                                {{ course['course_name'][0]|upper }}
+                            </div>
+
+                            <strong>{{ course['course_name'] }}</strong>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+                        <span class="course-badge">
+                            {{ course['course_code'] }}
+                        </span>
+                    </td>
+
+
+                    <td>{{ course['duration'] }}</td>
+
+
+                    <td>
+                        {{ course['description'] or 'No description' }}
+                    </td>
+
+
+                    <td>
+
+                        <form action="{{ url_for('delete_course', course_id=course['id']) }}"
+                              method="POST"
+                              onsubmit="return confirm('Are you sure you want to delete this course?')">
+
+                            <button type="submit" class="delete-btn">
+
+                                <i data-lucide="trash-2"></i>
+
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="5" class="empty-state">
+
+                        <i data-lucide="book-open"></i>
+
+                        <h3>No course records found</h3>
+
+                        <p>Start by adding your first course.</p>
+
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+
+        <div id="noCourseResults" class="no-results"
+             style="display:none;">
+
+            No matching courses found. Try another search.
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | MEVI{% endblock %}
+
+{% block breadcrumb %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- WELCOME SECTION -->
+
+<section class="welcome-section">
+
+    <div>
+        <span class="eyebrow">YOUR OVERVIEW</span>
+
+        <h1>Good morning, Admin <span>✦</span></h1>
+
+        <p>
+            Here's what's happening with your students today.
+            Let's make today productive!
+        </p>
+    </div>
+
+    <a href="{{ url_for('students') }}" class="primary-btn">
+
+        <i data-lucide="plus"></i>
+        Manage Students
+
+    </a>
+
+</section>
+
+
+<!-- STATISTICS -->
+
+<section class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+            <div class="stat-icon green">
+                <i data-lucide="users"></i>
+            </div>
+
+            <span class="stat-tag">All time</span>
+        </div>
+
+        <h2>{{ total_students }}</h2>
+
+        <p>Total Students</p>
+
+        <div class="stat-bottom">
+            <span>✦</span> Registered in the portal
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+            <div class="stat-icon orange">
+                <i data-lucide="book-open"></i>
+            </div>
+
+            <span class="stat-tag">Available</span>
+        </div>
+
+        <h2>{{ total_courses }}</h2>
+
+        <p>Unique Courses</p>
+
+        <div class="stat-bottom">
+            <span>✦</span> Courses with registrations
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+            <div class="stat-icon purple">
+                <i data-lucide="user-check"></i>
+            </div>
+
+            <span class="stat-tag">Latest</span>
+        </div>
+
+        <h2>{{ recent_students|length }}</h2>
+
+        <p>Recent Registrations</p>
+
+        <div class="stat-bottom">
+            <span>✦</span> Last 5 student records
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- RECENT STUDENTS -->
+
+<section class="content-card">
+
+    <div class="section-heading">
+
+        <div>
+            <span class="eyebrow">STUDENT DIRECTORY</span>
+            <h2>Recently Added Students</h2>
+            <p>A quick look at your latest registrations.</p>
+        </div>
+
+        <a href="{{ url_for('students') }}" class="text-link">
+            View all students
+            <i data-lucide="arrow-up-right"></i>
+        </a>
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>STUDENT</th>
+                    <th>EMAIL ADDRESS</th>
+                    <th>COURSE</th>
+                    <th>REGISTERED ON</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for student in recent_students %}
+
+                <tr>
+
+                    <td>
+                        <div class="student-cell">
+
+                            <div class="student-avatar">
+                                {{ student['name'][0]|upper }}
+                            </div>
+
+                            <strong>{{ student['name'] }}</strong>
+
+                        </div>
+                    </td>
+
+                    <td>{{ student['email'] }}</td>
+
+                    <td>
+                        <span class="course-badge">
+                            {{ student['course'] }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {{ student['created_at'][:10] }}
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="4" class="empty-state">
+
+                        <i data-lucide="users"></i>
+
+                        <h3>No students yet</h3>
+
+                        <p>Your student registrations will appear here.</p>
+
+                        <a href="{{ url_for('students') }}"
+                           class="text-link">
+                            Add your first student
+                        </a>
+
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<!-- BOTTOM SECTION -->
+
+<section class="bottom-grid">
+
+    <div class="welcome-card">
+
+        <div class="welcome-card-content">
+
+            <span class="eyebrow">A LITTLE REMINDER</span>
+
+            <h2>Every student has a story. Keep theirs organised.</h2>
+
+            <p>
+                Stay on top of registrations and make student
+                management a little easier every day.
+            </p>
+
+            <a href="{{ url_for('students') }}" class="light-btn">
+                Explore students
+                <i data-lucide="arrow-right"></i>
+            </a>
+
+        </div>
+
+        <div class="welcome-decoration">✳</div>
+
+    </div>
+
+
+    <div class="quick-card">
+
+        <span class="eyebrow">QUICK ACTION</span>
+
+        <h3>What would you like to do?</h3>
+
+        <a href="{{ url_for('students') }}" class="quick-action">
+
+            <div class="quick-icon">
+                <i data-lucide="user-plus"></i>
+            </div>
+
+            <div>
+                <strong>Add a student</strong>
+                <small>Create a new student record</small>
+            </div>
+
+            <i data-lucide="arrow-up-right"></i>
+
+        </a>
+
+        <a href="{{ url_for('students') }}" class="quick-action">
+
+            <div class="quick-icon orange-bg">
+                <i data-lucide="contact"></i>
+            </div>
+
+            <div>
+                <strong>View directory</strong>
+                <small>Browse all registered students</small>
+            </div>
+
+            <i data-lucide="arrow-up-right"></i>
+
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}
